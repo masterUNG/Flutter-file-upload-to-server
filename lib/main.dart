@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_experiment/app_photo.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart';
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      // home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: AddPhoto(),
     );
   }
 }
@@ -48,28 +50,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   File _image;
   final GlobalKey<ScaffoldState> _scaffoldstate =
       new GlobalKey<ScaffoldState>();
 
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await ImagePicker.pickImage(
+        source: ImageSource.camera, maxWidth: 800.0, maxHeight: 480.0);
     _uploadFile(image);
 
     setState(() {
       _image = image;
-    });
-  }
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
     });
   }
 
@@ -83,8 +74,9 @@ class _MyHomePageState extends State<MyHomePage> {
       FormData formData =
           new FormData.from({"file": new UploadFileInfo(filePath, fileName)});
 
-      Response response =
-          await Dio().post("http://192.168.0.101/saveFile.php", data: formData);
+      Response response = await Dio().post(
+          "https://www.androidthai.in.th/pint/saveFile.php",
+          data: formData);
       print("File upload response: $response");
 
       // Show the incoming message in snakbar
@@ -122,8 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: getImage,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+        child: Icon(Icons.photo_camera),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
